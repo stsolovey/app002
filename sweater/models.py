@@ -5,23 +5,23 @@ from flask_login import UserMixin
 from sweater import db, manager, ALLOWED_EXTENSIONS
 
 
-class Message(db.Model):
+class Sentence(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(1024), nullable=False)
 
-    def __init__(self, text, tags):
+    def __init__(self, text, translations):
         self.text = text.strip()
-        self.tags = [
-            Tag(text=tag.strip()) for tag in tags.split(',')
+        self.translations = [
+            Translation(text=translation.strip()) for translation in translations.split(',')
         ]
 
 
-class Tag(db.Model):
+class Translation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(32), nullable=False)
+    text = db.Column(db.String(1024), nullable=False)
 
-    message_id = db.Column(db.Integer, db.ForeignKey('message.id'), nullable=False)
-    message = db.relationship('Message', backref=db.backref('tags', lazy=True))
+    sentence_id = db.Column(db.Integer, db.ForeignKey('sentence.id'), nullable=False)
+    sentence = db.relationship('Sentence', backref=db.backref('translations', lazy=True))
 
 
 class User (db.Model, UserMixin):

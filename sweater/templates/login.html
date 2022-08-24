@@ -7,11 +7,11 @@
 <body>
 <h1>Login page</h1>
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
+{% with sentences = get_flashed_messages() %}
+  {% if sentences %}
     <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
+    {% for sentence in sentences %}
+      <li>{{ sentence }}</li>
     {% endfor %}
     </ul>
   {% endif %}

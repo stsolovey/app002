@@ -6,18 +6,18 @@
 </head>
 <body>
 <a href="{{ url_for('logout') }}">Logout</a>
-<h2>Messages</h2>
-<form method="post" action="/add_message">
+<h2>Sentences</h2>
+<form method="post" action="/add_sentence">
     <input type="text" name="text">
-    <input type="text" name="tag">
-    <button type="submit">Add message</button>
+    <input type="text" name="translation">
+    <button type="submit">Add sentence</button>
 </form>
 
-<h3>Messages list</h3>
-{% for message in messages %}
-<div>{{ message.text }}&nbsp;
-    {% for tag in message.tags %}
-        <b>#{{ tag.text }}</b>
+<h3>Sentences list</h3>
+{% for sentence in sentences %}
+<div>{{ sentence.text }}&nbsp;
+    {% for translation in sentence.translations %}
+        <b>{{ translation.text }}</b>
     {% endfor %}
 </div>
 {% endfor %}

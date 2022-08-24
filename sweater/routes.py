@@ -1,6 +1,6 @@
 import os
 
-from flask import render_template, redirect, url_for, request, flash, send_from_directory
+from flask import render_template, redirect, url_for, request, flash, send_from_directory, send_file
 from flask_login import login_user, login_required, logout_user
 
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -9,7 +9,7 @@ from werkzeug.middleware.shared_data import SharedDataMiddleware
 
 
 from sweater import app, db
-from sweater.models import Message, User, allowed_file, current_datetime_as_string
+from sweater.models import Sentence, User, allowed_file, current_datetime_as_string
 
 
 @app.route('/', methods=['GET'])
@@ -21,16 +21,16 @@ def hello_world():
 @app.route('/main', methods=['GET'])
 @login_required
 def main():
-    return render_template('main.html', messages=Message.query.all())
+    return render_template('main.html', sentences=Sentence.query.all())
 
 
-@app.route('/add_message', methods=['POST'])
+@app.route('/add_sentence', methods=['POST'])
 @login_required
-def add_message():
+def add_sentence():
     text = request.form['text']
-    tag = request.form['tag']
+    translation = request.form['translation']
 
-    db.session.add(Message(text, tag))
+    db.session.add(Sentence(text, translation))
     db.session.commit()
 
     return redirect(url_for('main'))
@@ -116,6 +116,11 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = current_datetime_as_string()+secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
+            return redirect(url_for('upload_file'))
     return render_template('upload.html')
+
+@app.route('/download', methods=['GET', 'POST'])
+def download_file():
+    filename = '1GB.zip'
+    path = os.path.join('../',app.config['UPLOAD_FOLDER'], filename)
+    return send_file(path, as_attachment=True)
